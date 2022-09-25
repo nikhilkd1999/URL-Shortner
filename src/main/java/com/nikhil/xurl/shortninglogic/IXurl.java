@@ -1,5 +1,6 @@
 package com.nikhil.xurl.shortninglogic;
 
+
 public interface IXurl {
 
       /**
@@ -32,7 +33,7 @@ public interface IXurl {
    * @param shortUrl
    * @return
    */
-  String getUrl(String shortUrl);
+  String getLongUrl(String shortUrl);
 
   /**
    * Return the number of times the longUrl has been looked up using getUrl()

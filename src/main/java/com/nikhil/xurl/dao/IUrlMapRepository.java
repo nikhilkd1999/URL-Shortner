@@ -1,10 +1,21 @@
 package com.nikhil.xurl.dao;
 
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.nikhil.xurl.entities.UrlMap;
 
 
-public interface IUrlMapRepository extends CrudRepository<UrlMap, String>{
 
+@Repository
+public interface IUrlMapRepository extends JpaRepository<UrlMap, String>{
+
+    // public List<UrlMap> findByLongUrl(String longUrl);
+    // @Query("SELECT * FROM url_map WHERE short_url = : v")
+    public List<UrlMap> findByShortUrl(@Param("v") String longUrl);
 }
