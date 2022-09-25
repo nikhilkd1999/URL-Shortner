@@ -1,11 +1,10 @@
 package com.nikhil.xurl.entities;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -16,14 +15,14 @@ public class UrlMap {
 
 	@Id
 	private String longUrl;
-	private String shortUrl;
-	
+	private String shortUrlHash;
+
 	public UrlMap(String longUrl, String shortUrl) {
 		super();
 		this.longUrl = longUrl;
-		this.shortUrl = shortUrl;
+		this.shortUrlHash = shortUrl;
 	}
-	
+
 	public UrlMap() {
 		super();
 	}
@@ -36,12 +35,12 @@ public class UrlMap {
 		this.longUrl = longUrl;
 	}
 
-	public String getShortUrl() {
-		return shortUrl;
+	public String getShortUrlHash() {
+		return shortUrlHash;
 	}
 
-	public void setShortUrl(String shortUrl) {
-		this.shortUrl = shortUrl;
+	public void setShortUrlHash(String shortUrlHash) {
+		this.shortUrlHash = shortUrlHash;
 	}
-	
+
 }
