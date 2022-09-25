@@ -1,110 +1,142 @@
 package com.nikhil.xurl.shortninglogic;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nikhil.xurl.dao.IUrlMapRepository;
 import com.nikhil.xurl.entities.UrlMap;
+import com.nikhil.xurl.utils.XurlConstants;
 
 @Service
 public class XurlImpl implements IXurl {
 
-    private Map<String, String> shortToLong;
-    private Map<String, String> longToShort;
-    private Map<String, Integer> longHitCount;
-    // private final static String PREFIX = "http://short.url/";
-    
-    private final static String PREFIX = "http://localhost:9099/";
-    static private Double NUM = 0.0;
+	static private Random SALT = new Random();
 
-    @Autowired
-    private IUrlMapRepository urlRepo;
+	@Autowired
+	private IUrlMapRepository urlRepo;
 
-    public XurlImpl() {
-        shortToLong = new HashMap<>();
-        longToShort = new HashMap<>();
-        longHitCount = new HashMap<>();
-    }
+	/**
+	 * Generates hash value for <code>longURL</code> which can be used as a <code>shortUrl</code>.
+	 * 
+	 * @param longUrl
+	 * 
+	 */
+	private String generateShortUrlHash(String longUrl) {
 
-    private String generateShortUrl(String longUrl) {
-        ++NUM;
-        String hash = MD5Hash.getMd5(longUrl + NUM).substring(0, 9);
-        while (shortToLong.containsKey(PREFIX + hash)) {
-            hash = MD5Hash.getMd5(longUrl + NUM).substring(0, 9);
-        }
+		String hash = MD5Hash.getMd5(longUrl + SALT.nextGaussian()).substring(0, XurlConstants.SHORT_URL_HASH_LENGTH);
+		while (getIfExistShort(hash) != null) {
+			hash = MD5Hash.getMd5(longUrl + SALT.nextGaussian()).substring(0, XurlConstants.SHORT_URL_HASH_LENGTH);
+		}
 
-        return PREFIX + hash;
-    }
+		return hash;
+	}
 
-    @Override
-    public String registerNewUrl(String longUrl) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String registerNewUrl(String longUrl) {
 
-        String shortUrl = null;
+		String shortUrlHash = "";
 
-        Optional<UrlMap> op = urlRepo.findById(longUrl);
-        UrlMap urlMap;
-        if(op.isPresent()) {
-            urlMap = op.get();
-        } else {
-            urlMap = null;
-        }
+		UrlMap urlMap = getIfExistLong(longUrl);
 
-        if (urlMap != null) {
-            return urlMap.getShortUrl();
-        } else {
-            shortUrl = generateShortUrl(longUrl);
-            urlMap = new UrlMap(longUrl, shortUrl);
-            urlRepo.save(urlMap);
-        }
-        return shortUrl;
-    }
+		if (urlMap != null) {
+			shortUrlHash = urlMap.getShortUrlHash();
+		} else {
+			shortUrlHash = generateShortUrlHash(longUrl);
+			urlMap = new UrlMap(longUrl, shortUrlHash);
+			urlRepo.save(urlMap);
+		}
 
-    @Override
-    public String registerNewUrl(String longUrl, String shortUrl) {
+		return getFormatedShortUrl(shortUrlHash);
+	}
 
-        if (shortToLong.containsKey(shortUrl)) {
-            return null;
-        }
+	/**
+	 * Yet to implement
+	 */
+	@Override
+	public String registerNewUrl(String longUrl, String shortUrl) {
+		return shortUrl;
+	}
 
-        longToShort.put(longUrl, shortUrl);
-        shortToLong.put(shortUrl, longUrl);
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getLongUrl(String shortUrlHash) {
 
-        return shortUrl;
-    }
+		List<UrlMap> longUrls = urlRepo.findByShortUrlHash(shortUrlHash);
 
-    @Override
-    public String getLongUrl(String shortUrl) {
+		if (longUrls.isEmpty()) {
+			return null;
+		} else {
+			return longUrls.get(0).getLongUrl();
+		}
+	}
 
-        List<UrlMap> longUrls = urlRepo.findByShortUrl(PREFIX + shortUrl);
+	/**
+	 * Yet to implement
+	 */
+	@Override
+	public Integer getHitCount(String longUrl) {
 
-        if (longUrls.isEmpty()) {
-            return null;
-        } else {
-            return longUrls.get(0).getLongUrl();
-        }
-    }
+		return 0;
+	}
 
-    @Override
-    public Integer getHitCount(String longUrl) {
+	/**
+	 * Yet to implement
+	 */
+	@Override
+	public String delete(String longUrl) {
+		return null;
+	}
 
-        return longHitCount.getOrDefault(longUrl, 0);
-    }
+	/**
+	 * Returns {@link UrlMap} if the <code>shortUrl</code> exists in DB else returns
+	 * <code>null</code>
+	 * 
+	 * @param shortUrl
+	 * 
+	 */
+	private UrlMap getIfExistShort(String shortUrl) {
+		List<UrlMap> urlMaps = urlRepo.findByShortUrlHash(shortUrl);
+		if (urlMaps.isEmpty()) {
+			return null;
+		}
+		return urlMaps.get(0);
+	}
 
-    @Override
-    public String delete(String longUrl) {
+	/**
+	 * Returns {@link UrlMap} if the <code>longUrl</code> exists in DB else returns
+	 * <code>null</code>
+	 * 
+	 * @param longUrl
+	 * 
+	 */
+	private UrlMap getIfExistLong(String longUrl) {
 
-        if (longToShort.containsKey(longUrl)) {
-            String shortURL = longToShort.get(longUrl);
-            longToShort.remove(longUrl);
-            shortToLong.remove(shortURL);
-        }
+		Optional<UrlMap> opnl = urlRepo.findById(longUrl);
 
-        return null;
-    }
+		if (opnl.isPresent()) {
+			return opnl.get();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns concatenated String of URL_PREFIX and shortUrlHash
+	 * 
+	 * @param shortUrlHash
+	 * 
+	 * @return shortUrl
+	 */
+	private String getFormatedShortUrl(String shortUrlHash) {
+		return XurlConstants.URL_PREFIX + shortUrlHash;
+	}
 
 }
