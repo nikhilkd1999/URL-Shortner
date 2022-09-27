@@ -1,5 +1,7 @@
 package com.nikhil.xurl.shortninglogic;
 
+import org.springframework.http.ResponseEntity;
+
 public interface IXurl {
 
 	/**
@@ -10,7 +12,7 @@ public interface IXurl {
 	 * @param longUrl
 	 * @return
 	 */
-	String registerNewUrl(String longUrl);
+	ResponseEntity<Object> registerNewUrl(String longUrl);
 
 	/**
 	 * 
@@ -22,7 +24,7 @@ public interface IXurl {
 	 * @param shortUrl
 	 * @return
 	 */
-	String registerNewUrl(String longUrl, String shortUrl);
+	ResponseEntity<Object> registerNewUrl(String longUrl, String shortUrl);
 
 	/**
 	 * 

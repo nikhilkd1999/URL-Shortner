@@ -16,31 +16,16 @@ public class UrlMap {
 	@Id
 	private String longUrl;
 	private String shortUrlHash;
+	@Builder.Default
+	private Integer hitCount = 1;
 
-	public UrlMap(String longUrl, String shortUrl) {
-		super();
+	public UrlMap(String longUrl, String shortUrlHash, Integer hitCount) {
 		this.longUrl = longUrl;
-		this.shortUrlHash = shortUrl;
+		this.shortUrlHash = shortUrlHash;
+		this.hitCount = hitCount;
 	}
 
 	public UrlMap() {
 		super();
 	}
-
-	public String getLongUrl() {
-		return longUrl;
-	}
-
-	public void setLongUrl(String longUrl) {
-		this.longUrl = longUrl;
-	}
-
-	public String getShortUrlHash() {
-		return shortUrlHash;
-	}
-
-	public void setShortUrlHash(String shortUrlHash) {
-		this.shortUrlHash = shortUrlHash;
-	}
-
 }
