@@ -16,7 +16,7 @@ public class XurlApplication {
 		 
 		IUrlMapRepository urlRepo =  ctx.getBean(IUrlMapRepository.class);
 		 
-		UrlMap um = new UrlMap("https//long", "https//short");
+		UrlMap um = UrlMap.builder().longUrl("https//long").shortUrlHash("https//short").build();
 		 
 		urlRepo.save(um);
 		 

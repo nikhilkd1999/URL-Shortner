@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.nikhil.xurl.dao.IUrlMapRepository;
@@ -39,7 +41,7 @@ public class XurlImpl implements IXurl {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String registerNewUrl(String longUrl) {
+	public ResponseEntity<Object> registerNewUrl(String longUrl) {
 
 		String shortUrlHash = "";
 
@@ -49,19 +51,25 @@ public class XurlImpl implements IXurl {
 			shortUrlHash = urlMap.getShortUrlHash();
 		} else {
 			shortUrlHash = generateShortUrlHash(longUrl);
-			urlMap = new UrlMap(longUrl, shortUrlHash);
+			urlMap = UrlMap.builder().longUrl(longUrl).shortUrlHash(shortUrlHash).build();
 			urlRepo.save(urlMap);
 		}
-
-		return getFormatedShortUrl(shortUrlHash);
+		return new ResponseEntity<Object>(getFormatedShortUrl(shortUrlHash), HttpStatus.OK);
 	}
 
 	/**
-	 * Yet to implement
+	 * {@inheritDoc}
 	 */
 	@Override
-	public String registerNewUrl(String longUrl, String shortUrl) {
-		return shortUrl;
+	public ResponseEntity<Object> registerNewUrl(String longUrl, String shortUrl) {
+
+		if(getIfExistShort(shortUrl)!=null){
+			return null;
+		}
+
+		UrlMap urlMap = UrlMap.builder().longUrl(longUrl).shortUrlHash(shortUrl).build();
+		urlRepo.save(urlMap);
+		return new ResponseEntity<Object>("URL mapped successfully!", HttpStatus.OK);
 	}
 
 	/**
@@ -75,17 +83,20 @@ public class XurlImpl implements IXurl {
 		if (longUrls.isEmpty()) {
 			return null;
 		} else {
-			return longUrls.get(0).getLongUrl();
+			// Increment hit count by 1
+			UrlMap urlMap = longUrls.get(0);
+			urlMap.setHitCount(urlMap.getHitCount() + 1);
+			urlRepo.save(urlMap);
+			return urlMap.getLongUrl();
 		}
 	}
 
 	/**
-	 * Yet to implement
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Integer getHitCount(String longUrl) {
-
-		return 0;
+		return urlRepo.findById(longUrl).get().getHitCount();
 	}
 
 	/**

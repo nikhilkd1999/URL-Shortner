@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nikhil.xurl.entities.UrlMap;
 import com.nikhil.xurl.shortninglogic.XurlImpl;
 import com.nikhil.xurl.utils.XurlConstants;
 
@@ -57,11 +58,13 @@ public class TestController {
 	}
 
 	@PostMapping("/register")
-	public String registerLongUrl(@RequestBody String longUrl) {
-
-		String shortUrl = xurlImpl.registerNewUrl(longUrl);
-
-		return shortUrl;
+	public ResponseEntity<Object> registerSpecifiedUrl(@RequestBody UrlMap mapping) {
+		String longUrl = mapping.getLongUrl();
+		String shortUrl = mapping.getShortUrlHash();
+		if (shortUrl == null) {
+			return xurlImpl.registerNewUrl(longUrl);
+		}
+		return xurlImpl.registerNewUrl(longUrl, shortUrl);
 	}
 
 }
