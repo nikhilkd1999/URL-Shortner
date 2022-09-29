@@ -58,10 +58,15 @@ public class XurlImpl implements IXurl {
 	}
 
 	/**
-	 * Yet to implement
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ResponseEntity<Object> registerNewUrl(String longUrl, String shortUrl) {
+
+		if(getIfExistShort(shortUrl)!=null){
+			return null;
+		}
+
 		UrlMap urlMap = UrlMap.builder().longUrl(longUrl).shortUrlHash(shortUrl).build();
 		urlRepo.save(urlMap);
 		return new ResponseEntity<Object>("URL mapped successfully!", HttpStatus.OK);
@@ -87,7 +92,7 @@ public class XurlImpl implements IXurl {
 	}
 
 	/**
-	 * Yet to implement
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Integer getHitCount(String longUrl) {
