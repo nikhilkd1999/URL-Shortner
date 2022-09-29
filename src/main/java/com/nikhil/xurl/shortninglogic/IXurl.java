@@ -51,6 +51,6 @@ public interface IXurl {
 	 * @param longUrl
 	 * @return
 	 */
-	String delete(String longUrl);
+	ResponseEntity<Object> delete(String longUrl);
 
 }

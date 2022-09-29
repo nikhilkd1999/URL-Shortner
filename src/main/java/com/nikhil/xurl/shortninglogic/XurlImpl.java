@@ -57,8 +57,11 @@ public class XurlImpl implements IXurl {
 		return new ResponseEntity<Object>(getFormatedShortUrl(shortUrlHash), HttpStatus.OK);
 	}
 
-	/**
-	 * Yet to implement
+	
+	/** 
+	 * @param longUrl
+	 * @param shortUrl
+	 * @return ResponseEntity<Object>
 	 */
 	@Override
 	public ResponseEntity<Object> registerNewUrl(String longUrl, String shortUrl) {
@@ -86,20 +89,30 @@ public class XurlImpl implements IXurl {
 		}
 	}
 
-	/**
-	 * Yet to implement
+	
+	/** 
+	 * @param longUrl
+	 * @return Integer
 	 */
 	@Override
 	public Integer getHitCount(String longUrl) {
 		return urlRepo.findById(longUrl).get().getHitCount();
 	}
 
-	/**
-	 * Yet to implement
+	
+	/** 
+	 * @param longUrl
+	 * @return String
 	 */
 	@Override
-	public String delete(String longUrl) {
-		return null;
+	public ResponseEntity<Object> delete(String longUrl) {
+		try {
+			urlRepo.deleteById(longUrl);
+			return new ResponseEntity<Object>("URL deleted successfully!", HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<Object>("URL not found!", HttpStatus.NOT_FOUND);
+		}
+		
 	}
 
 	/**
