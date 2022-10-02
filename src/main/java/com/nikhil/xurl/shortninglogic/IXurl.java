@@ -45,8 +45,7 @@ public interface IXurl {
 	Integer getHitCount(String longUrl);
 
 	/**
-	 * Delete the mapping between this longUrl and its corresponding shortUrl // Do
-	 * not zero the Hit Count for this longUrl
+	 * Delete the record corresponding to the given longUrl 
 	 * 
 	 * @param longUrl
 	 * @return

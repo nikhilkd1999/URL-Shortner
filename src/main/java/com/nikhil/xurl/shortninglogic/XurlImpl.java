@@ -99,10 +99,8 @@ public class XurlImpl implements IXurl {
 		return urlRepo.findById(longUrl).get().getHitCount();
 	}
 
-	
-	/** 
-	 * @param longUrl
-	 * @return String
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ResponseEntity<Object> delete(String longUrl) {
