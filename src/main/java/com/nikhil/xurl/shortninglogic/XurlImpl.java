@@ -100,11 +100,17 @@ public class XurlImpl implements IXurl {
 	}
 
 	/**
-	 * Yet to implement
+	 * {@inheritDoc}
 	 */
 	@Override
-	public String delete(String longUrl) {
-		return null;
+	public ResponseEntity<Object> delete(String longUrl) {
+		try {
+			urlRepo.deleteById(longUrl);
+			return new ResponseEntity<Object>("URL deleted successfully!", HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<Object>("URL not found!", HttpStatus.NOT_FOUND);
+		}
+		
 	}
 
 	/**
