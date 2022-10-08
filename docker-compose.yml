@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  url-shortner-backend:
+    image: url-shortner:001
+    container_name: url-shortner-backend
+    environment:
+      spring.liquibase.url: jdbc:mysql://sql5.freesqldatabase.com:3306/sql5524482?enabledTLSProtocols=TLSv1.2
+      spring.liquibase.user: sql5524482
+      spring.liquibase.password: TKQrjdlLkD
+    ports:
+      - 9099:9099
+
+
+
+
