@@ -1,14 +1,12 @@
-# Use an official OpenJDK runtime as a parent image
-FROM adoptopenjdk:11-jre-hotspot
-
-# Set the working directory in the container to /app
+FROM maven:3.8.4-jdk-11 AS build
 WORKDIR /
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src/ /
+RUN mvn package -DskipTests
 
-# Copy the packaged jar file into the container at /app
-COPY target/xurl-0.0.1-SNAPSHOT.jar ./
-
-# Expose port 8080 to the host machine
+FROM openjdk:11-jre-slim
+WORKDIR /
+COPY --from=build /target/xurl-0.0.1-SNAPSHOT.jar .
 EXPOSE 8888
-
-# Set the command to run the jar file when the container starts
 CMD ["java", "-jar", "xurl-0.0.1-SNAPSHOT.jar"]
