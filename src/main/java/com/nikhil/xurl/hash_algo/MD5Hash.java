@@ -1,4 +1,4 @@
-package com.nikhil.xurl.shortninglogic;
+package com.nikhil.xurl.hash_algo;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

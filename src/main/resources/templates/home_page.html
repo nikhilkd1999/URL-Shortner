@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>URL Shortener</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">URL Shortener</h1>
+        <form th:action="@{/register}" method="post">
+            <div class="form-group">
+                <label for="long-url">Long URL:</label>
+                <input type="url" class="form-control" id="long-url" name="longUrl" placeholder="Enter long URL here"
+                    required>
+            </div>
+            <button type="submit" class="btn btn-primary mb-3">Shorten URL</button>
+        </form>
+        <div th:if="${shortUrl}" class="alert alert-success">
+            <p>Your short URL:</p>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" th:value="${shortUrl}" readonly>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        function copyToClipboard() {
+            /* Get the text field */
+            var copyText = document.getElementById("short-url");
+
+            /* Select the text field */
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+            /* Copy the text inside the text field */
+            document.execCommand("copy");
+
+            /* Alert the copied text */
+            alert("Copied the text: " + copyText.value);
+        }
+    </script>
+</body>
+
+</html>
