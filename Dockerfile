@@ -1,12 +1,23 @@
-FROM maven:3.8.4-jdk-11 AS build
-WORKDIR /
-COPY pom.xml .
-RUN mvn dependency:go-offline
-COPY src/ /
-RUN mvn package -DskipTests
+# Use an official OpenJDK runtime as a parent image
+FROM adoptopenjdk/openjdk11:jdk-11.0.10_9-alpine-slim
 
-FROM openjdk:11-jre-slim
-WORKDIR /
-COPY --from=build /target/xurl-0.0.1-SNAPSHOT.jar .
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the pom.xml file to the container
+COPY pom.xml .
+
+# Copy the app.properties file to the container
+COPY src/main/resources/application.properties .
+
+# Copy the rest of the source code to the container
+COPY src/ ./src/
+
+# Build the application
+RUN ./mvnw package
+
+# Expose port 8888
 EXPOSE 8888
-CMD ["java", "-jar", "xurl-0.0.1-SNAPSHOT.jar"]
+
+# Run the application
+CMD ["java", "-jar", "./target/xurl-0.0.1-SNAPSHOT.jar"]
