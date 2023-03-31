@@ -20,28 +20,40 @@
             <button type="submit" class="btn btn-primary mb-3">Shorten URL</button>
         </form>
 
-        <div th:if="${session.longUrl}">
+        <div th:if="${session.longUrl}" class="alert alert-info mt-3">
+            <h5>Long URL:</h5>
+            <p class="mb-0" th:text="${session.longUrl}"></p>
+        </div>
+
+        <!-- <div th:if="${session.shortUrl}" class="alert alert-success mt-3">
+            <h5>Short URL:</h5>
+            <p class="mb-0" th:text="${session.shortUrl}"></p>
+        </div> -->
+
+        <!-- <div th:if="${session.longUrl}">
             Long URL: <span th:text="${session.longUrl}"></span>
             <th:block th:text="${#session.removeAttribute('longUrl')}"></th:block>
         </div>
-
+        
         <div th:if="${session.shortUrl}">
             Short URL: <span th:text="${session.shortUrl}"></span>
             <th:block th:text="${#session.removeAttribute('shortUrl')}"></th:block>
-        </div>
+        </div> -->
 
 
-
-
-        <div th:if="${shortUrl}" class="alert alert-success">
-            <p>Your short URL:</p>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" th:value="${shortUrl}" readonly>
+        <div th:if="${session.shortUrl}" class="alert alert-success mt-3">
+            <h5>Your short URL:</h5>
+            <div class="input-group">
+                <input type="text" id="short-url" class="form-control" th:value="${session.shortUrl}" readonly>
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">Copy</button>
                 </div>
             </div>
         </div>
+    </div>
+    <div>
+        <th:block th:text="${#session.removeAttribute('longUrl')}"></th:block>
+        <th:block th:text="${#session.removeAttribute('shortUrl')}"></th:block>
     </div>
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -60,7 +72,7 @@
             document.execCommand("copy");
 
             /* Alert the copied text */
-            alert("Copied the text: " + copyText.value);
+            // alert("Copied the text: " + copyText.value);
         }
     </script>
 </body>
