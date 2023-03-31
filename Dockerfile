@@ -13,8 +13,8 @@ RUN chmod +x mvnw
 # Build the application
 RUN ./mvnw package
 
-# Expose port 8888
-EXPOSE 8888
+# Expose port 8080
+EXPOSE 8080
 
 # Run the application
 CMD ["java", "-jar", "./target/xurl-0.0.1-SNAPSHOT.jar"]

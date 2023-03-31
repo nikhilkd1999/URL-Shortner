@@ -51,7 +51,7 @@
             </div>
         </div>
     </div>
-    <div>
+    <div th:if="${session.shortUrl}">
         <th:block th:text="${#session.removeAttribute('longUrl')}"></th:block>
         <th:block th:text="${#session.removeAttribute('shortUrl')}"></th:block>
     </div>
