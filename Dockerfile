@@ -7,6 +7,7 @@ WORKDIR /app
 # Copy the pom.xml file to the container
 COPY . /app/
 
+# Give permission to mvnw
 RUN chmod +x mvnw
 
 # Build the application
