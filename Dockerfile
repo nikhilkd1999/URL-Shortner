@@ -5,13 +5,7 @@ FROM adoptopenjdk/openjdk11:jdk-11.0.10_9-alpine-slim
 WORKDIR /app
 
 # Copy the pom.xml file to the container
-COPY pom.xml .
-
-# Copy the app.properties file to the container
-COPY src/main/resources/application.properties .
-
-# Copy the rest of the source code to the container
-COPY src/ ./src/
+COPY . /app/
 
 # Build the application
 RUN ./mvnw package
